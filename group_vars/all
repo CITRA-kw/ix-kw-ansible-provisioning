@@ -5,7 +5,7 @@ interfaces:
         mgmt: "10.0.1.11/24"
         mgmtgateway: 10.0.1.5
         loopback: "10.10.10.1"
-        asn: 65100
+        asn: 202414
         evpn: 
             port: evpnpeer
             slaves: [swp53, swp54]
@@ -30,7 +30,7 @@ interfaces:
         mgmt: "10.0.1.12/24"
         mgmtgateway: 10.0.1.5
         loopback: "10.10.10.2"
-        asn: 65200
+        asn: 202414
         evpn: 
             port: evpnpeer
             slaves: [swp53, swp54]
