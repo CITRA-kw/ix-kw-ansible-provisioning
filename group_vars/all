@@ -1,0 +1,59 @@
+# networking
+
+interfaces:
+    tec-ixp-leaf-01:
+        mgmt: "10.0.1.11/24"
+        mgmtgateway: 10.0.1.5
+        loopback: "10.10.10.1"
+        asn: 65100
+        evpn: 
+            port: evpnpeer
+            slaves: [swp53, swp54]
+        routeserver: 
+            vlan: 7
+            ipv4: 194.54.136.1
+            ipv6: "2a0c:c9c0::1"
+        members:
+            rktcloud:
+                ports: 
+                    - port: swp1 
+                      mac: 00:1B:63:84:45:E3
+                      vlan: 7
+                asn: 207130
+            "Zain Group":
+                ports:
+                    - port: swp2
+                      mac: 00:1B:63:84:45:E9
+                      vlan: 7
+                asn: 42961
+    tec-ixp-leaf-02:
+        mgmt: "10.0.1.12/24"
+        mgmtgateway: 10.0.1.5
+        loopback: "10.10.10.2"
+        asn: 65200
+        evpn: 
+            port: evpnpeer
+            slaves: [swp53, swp54]
+        routeserver: 
+            vlan: 7
+            ipv4: 194.54.136.2
+            ipv6: "2a0c:c9c0::2"
+        members:
+            "Zain Group":
+                ports:
+                    - port: swp1 
+                      mac: 00:1B:63:84:45:E7
+                      vlan: 7
+                asn: 42961
+            "Gulfnet":
+                ports:
+                    - port: swp2
+                      mac: 00:1B:63:84:45:AA
+                      vlan: 7
+                asn: 3225
+vlans: 
+    ixp:
+        id: 7
+sflow_collector:
+    ip: 10.0.0.11
+    port: 6343

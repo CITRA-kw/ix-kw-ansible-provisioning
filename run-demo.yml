@@ -1,0 +1,10 @@
+---
+- hosts: leafs
+  user: cumulus
+  become: yes
+  become_method: sudo
+
+  roles:
+    - ifupdown2
+    - frr
+    - sflow

@@ -1,0 +1,28 @@
+{% set intvars = interfaces[ansible_hostname] -%}
+!
+
+frr defaults datacenter
+hostname {{ ansible_hostname }}
+username cumulus nopassword
+!
+service integrated-vtysh-config
+!
+log syslog informational
+
+router bgp {{ intvars.asn }}
+    bgp router-id {{ intvars.loopback }}
+    bgp bestpath as-path multipath-relax
+    bgp bestpath compare-routerid
+    neighbor fabric peer-group
+    neighbor fabric remote-as external
+    neighbor fabric description Internal Fabric Network
+    neighbor fabric capability extended-nexthop
+    neighbor {{ intvars.evpn.port }} interface peer-group fabric
+!
+    address-family l2vpn evpn
+        neighbor {{ intvars.evpn.port }} activate
+        advertise-all-vni
+    exit-address-family
+!
+line vty
+!

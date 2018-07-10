@@ -1,0 +1,7 @@
+
+
+# This command actually restarts hsflowd. This command will actually drop all
+# routes currently in progress, so this will interrupt networking currently in
+# place.
+- name: restart hsflowd
+  service: name=hsflowd state=restarted

@@ -1,0 +1,10 @@
+
+# This step ensures that the frr daemon is running.
+- name: ensure hsflowd package is installed
+  apt: 
+    name: hsflowd
+    update_cache: yes
+
+- name: configure /etc/hsflowd.conf
+  template: src=hsflowd.j2 dest=/etc/hsflowd.conf
+  notify: restart hsflowd

@@ -1,0 +1,62 @@
+{% set intvars = interfaces[ansible_hostname] %}
+# /etc/network/interfaces template for switches ({{ansible_hostname}})
+# Created by Ansible
+
+{% set interfacelist = [ ] %}
+{% set vlanlist = [ ] %}
+
+auto lo
+iface lo inet loopback
+  address {{ intvars.loopback }}/32
+  alias loopback interface
+
+auto eth0
+iface eth0 inet static
+  mtu 9216
+  address {{ intvars.mgmt }}
+  gateway {{ intvars.mgmtgateway}}
+  alias management interface
+
+{% for member in intvars.members %}
+	{% for info in intvars.members[member].ports %}
+
+{{ interfacelist.append(info.port) }}
+auto {{ info.port }}
+iface {{ info.port }}
+	bridge-access {{ info.vlan }}
+	alias {{member}}
+	mtu 9216
+	{% endfor %}
+{% endfor %}
+
+
+
+auto {{ intvars.evpn.port }}
+iface {{ intvars.evpn.port }}
+    bond-slaves {{ intvars.evpn.slaves | sort | join(" ") }}
+    mtu 9216
+
+
+auto bridge
+iface bridge
+    bridge-ports vni7 {{ interfacelist | sort | join(" ") }}
+    bridge-vids 7
+
+
+auto vlan7
+iface vlan7
+    vlan-id 7
+    vlan-raw-device bridge
+    address {{ intvars.routeserver.ipv4 }}/24
+    address {{ intvars.routeserver.ipv6 }}/64
+
+auto vni7
+iface vni7
+    bridge-access 7
+    bridge-arp-nd-suppress on
+    bridge-learning off
+    mstpctl-bpduguard yes
+    mstpctl-portbpdufilter yes
+    vxlan-id 107
+    vxlan-local-tunnelip {{ intvars.loopback }}
+
