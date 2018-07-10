@@ -52,8 +52,8 @@ interfaces:
                       vlan: 7
                 asn: 3225
 vlans: 
-    ixp:
-        id: 7
+    - tag: 7
+
 sflow_collector:
     ip: 10.0.0.11
     port: 6343

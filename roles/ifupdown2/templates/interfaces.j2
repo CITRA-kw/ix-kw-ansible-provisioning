@@ -29,7 +29,31 @@ iface {{ info.port }}
 	{% endfor %}
 {% endfor %}
 
+{% for vlan in vlans %}
+{% set vniid = vlan.tag + 10000 %}
+{{ vlanlist.append(vlan.tag) }}
 
+auto vni{{ vniid }}
+iface vni{{ vniid }}
+    mtu 9216
+    bridge-learning off
+    bridge-access {{ vlan.tag }}
+    bridge-arp-nd-suppress on
+    vxlan-id {{ vniid }}
+    vxlan-local-tunnelip {{ intvars.loopback }}
+    mstpctl-bpduguard yes
+    mstpctl-portbpdufilter yes
+
+auto vlan{{ vlan.tag }}
+iface vlan{{ vlan.tag }}
+    mtu 9216
+    ip6-forward off
+    ip-forward off
+    vlan-id {{ vlan.tag }}
+    vlan-raw-device bridge
+{{ interfacelist.append("vni{:d}".format(vniid)) }}
+
+{% endfor %}
 
 auto {{ intvars.evpn.port }}
 iface {{ intvars.evpn.port }}
@@ -39,24 +63,11 @@ iface {{ intvars.evpn.port }}
 
 auto bridge
 iface bridge
-    bridge-ports vni7 {{ interfacelist | sort | join(" ") }}
-    bridge-vids 7
+    bridge-ports {{ interfacelist | sort | join(" ") }}
+    bridge-vids {{ vlanlist|sort|join(" ") }}
 
 
-auto vlan7
-iface vlan7
-    vlan-id 7
-    vlan-raw-device bridge
-    address {{ intvars.routeserver.ipv4 }}/24
-    address {{ intvars.routeserver.ipv6 }}/64
 
-auto vni7
-iface vni7
-    bridge-access 7
-    bridge-arp-nd-suppress on
-    bridge-learning off
-    mstpctl-bpduguard yes
-    mstpctl-portbpdufilter yes
-    vxlan-id 107
-    vxlan-local-tunnelip {{ intvars.loopback }}
+
+
 
