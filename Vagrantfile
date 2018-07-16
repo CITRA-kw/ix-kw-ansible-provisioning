@@ -102,7 +102,7 @@ Vagrant.configure("2") do |config|
       v.memory = 1024
     end
     #   see note here: https://github.com/pradels/vagrant-libvirt#synced-folders
-    device.vm.synced_folder "/Users/hasbean/mnt/cldemo-automation-ansible/", "/vagrant"
+    device.vm.synced_folder ".", "/vagrant"
 
 
 
