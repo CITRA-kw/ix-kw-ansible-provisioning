@@ -7,7 +7,6 @@ interfaces:
         loopback: "10.10.10.1"
         asn: 65001
         evpn: 
-            port: evpnpeer
             slaves: [swp53, swp54]
         routeserver: 
             vlan: 7
@@ -34,7 +33,6 @@ interfaces:
         loopback: "10.10.10.2"
         asn: 65002
         evpn: 
-            port: evpnpeer
             slaves: [swp53, swp54]
         routeserver: 
             vlan: 7

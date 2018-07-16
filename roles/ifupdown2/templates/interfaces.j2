@@ -55,11 +55,10 @@ iface swp53
 auto swp54
 iface swp54
 
-auto {{ intvars.evpn.port }}
+{# auto {{ intvars.evpn.port }}
 iface {{ intvars.evpn.port }}
     bond-slaves {{ intvars.evpn.slaves | sort | join(" ") }}
-    {# mtu 9216 #}
-
+ #}
 
 auto bridge
 iface bridge

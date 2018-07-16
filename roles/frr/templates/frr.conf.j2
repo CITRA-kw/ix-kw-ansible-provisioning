@@ -17,10 +17,18 @@ router bgp {{ intvars.asn }}
     neighbor fabric remote-as external
     neighbor fabric description Internal Fabric Network
     neighbor fabric capability extended-nexthop
-    neighbor {{ intvars.evpn.port }} interface peer-group fabric
+{% for slave in intvars.evpn.slaves %}
+    neighbor {{ slave }} interface peer-group fabric
+{% endfor %}
+!
+    address-family ipv4 unicast
+        redistribute connected
+    exit-address-family
 !
     address-family l2vpn evpn
-        neighbor {{ intvars.evpn.port }} activate
+{% for slave in intvars.evpn.slaves %}
+        neighbor {{ slave }} activate
+{% endfor %}
         advertise-all-vni
     exit-address-family
 !
