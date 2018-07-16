@@ -10,12 +10,15 @@ iface lo inet loopback
   address {{ intvars.loopback }}/32
   alias loopback interface
 
+# auto eth0
+# iface eth0 inet static
+#   mtu 9216
+#   address {{ intvars.mgmt }}
+#   gateway {{ intvars.mgmtgateway}}
+#   alias management interface
+
 auto eth0
-iface eth0 inet static
-  mtu 9216
-  address {{ intvars.mgmt }}
-  gateway {{ intvars.mgmtgateway}}
-  alias management interface
+iface eth0 inet dhcp
 
 {% for member in intvars.members %}
 	{% for info in intvars.members[member].ports %}
@@ -23,9 +26,9 @@ iface eth0 inet static
 {{ interfacelist.append(info.port) }}
 auto {{ info.port }}
 iface {{ info.port }}
-	bridge-access {{ info.vlan }}
+	{# bridge-access {{ info.vlan }} #}
 	alias {{member}}
-	mtu 9216
+	{# mtu 9216 #}
 	{% endfor %}
 {% endfor %}
 
@@ -35,34 +38,35 @@ iface {{ info.port }}
 
 auto vni{{ vniid }}
 iface vni{{ vniid }}
-    mtu 9216
+    {# mtu 9216 #}
     bridge-learning off
-    bridge-access {{ vlan.tag }}
+    {# bridge-access {{ vlan.tag }} #}
     bridge-arp-nd-suppress on
     vxlan-id {{ vniid }}
     vxlan-local-tunnelip {{ intvars.loopback }}
     mstpctl-bpduguard yes
     mstpctl-portbpdufilter yes
-
-auto vlan{{ vlan.tag }}
-iface vlan{{ vlan.tag }}
-    mtu 9216
-    ip6-forward off
-    ip-forward off
-    vlan-id {{ vlan.tag }}
-    vlan-raw-device bridge
 {{ interfacelist.append("vni{:d}".format(vniid)) }}
-
 {% endfor %}
+
+auto swp53
+iface swp53 
+
+auto swp54
+iface swp54
 
 auto {{ intvars.evpn.port }}
 iface {{ intvars.evpn.port }}
     bond-slaves {{ intvars.evpn.slaves | sort | join(" ") }}
-    mtu 9216
+    {# mtu 9216 #}
 
 
 auto bridge
 iface bridge
     bridge-ports {{ interfacelist | sort | join(" ") }}
-    bridge-vids {{ vlanlist|sort|join(" ") }}
+    bridge-stp on
 
+{#     bridge-vids {{ vlanlist|sort|join(" ") }}
+    bridge-pvid 7
+    bridge-stp on
+    bridge-vlan-aware yes #}

@@ -5,7 +5,7 @@ interfaces:
         mgmt: "10.0.1.11/24"
         mgmtgateway: 10.0.1.5
         loopback: "10.10.10.1"
-        asn: 202414
+        asn: 65001
         evpn: 
             port: evpnpeer
             slaves: [swp53, swp54]
@@ -19,6 +19,8 @@ interfaces:
                     - port: swp1 
                       mac: 00:1B:63:84:45:E3
                       vlan: 7
+                      assignedipv4: 194.54.136.3
+                      assignedipv6: "2a0c:c9c0::3"
                 asn: 207130
             "Zain Group":
                 ports:
@@ -30,7 +32,7 @@ interfaces:
         mgmt: "10.0.1.12/24"
         mgmtgateway: 10.0.1.5
         loopback: "10.10.10.2"
-        asn: 202414
+        asn: 65002
         evpn: 
             port: evpnpeer
             slaves: [swp53, swp54]
@@ -50,9 +52,22 @@ interfaces:
                     - port: swp2
                       mac: 00:1B:63:84:45:AA
                       vlan: 7
+                      assignedipv4: 194.54.136.4
+                      assignedipv6: "2a0c:c9c0::4"
                 asn: 3225
+    server01:
+        neighbors:
+            eth1:
+                ip: "194.54.136.3"
+                mask: "255.255.255.0"
+    server02:
+        neighbors:
+            eth2:
+                ip: "194.54.136.4"
+                mask: "255.255.255.0"
 vlans: 
     - tag: 7
+      desc: "IXP vlan"
 
 sflow_collector:
     ip: 10.0.0.11

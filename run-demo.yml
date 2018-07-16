@@ -8,3 +8,12 @@
     - ifupdown2
     - frr
     # - sflow
+
+
+
+- hosts: servers
+  user: cumulus
+  become: yes
+  become_method: sudo
+  roles:
+    - ifupdown
